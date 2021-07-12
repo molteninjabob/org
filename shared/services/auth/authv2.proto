@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package authv2proto;
+
+import "google/protobuf/timestamp.proto";
+import "org/shared/lib/grpcproto/uuid.proto";
+
+service AuthV2 {
+    rpc UserByUsername(FindByUsernameRequest) returns (UserResponse) {}
+}
+
+message FindByUsernameRequest {
+    string Username = 1;
+}
+
+message UserResponse {
+    UserProfileResponse Profile = 1;
+    repeated UserAccess Access = 2;
+}
+
+message UserProfileResponse {
+    UUID UserID = 1;
+    string Username = 2;
+    UserType Type = 3;
+    string FirstName = 4;
+    string LastName = 5;
+    StatusType Status = 6;
+    string MobileNumber = 7;
+    google.protobuf.Timestamp MobileNumberVerifiedAt = 8;
+}
+
+message UserAccess {
+    UUID LocationID = 1;
+    repeated int32 Roles = 2;
+    bool Accepted =3;
+}
+
+enum UserType {
+    Unknown = 0;
+    Practice = 1;
+    Weave = 2;
+}
+
+enum StatusType {
+    Legacy = 0; //old users i.e. all users prior to this update
+    Invited = 1; //user has received an email to join a location
+    Active = 2; //user has accepted invitation
+    Disabled = 3;
+}
+
+message UUID {
+    bytes Bytes = 1;
+}
